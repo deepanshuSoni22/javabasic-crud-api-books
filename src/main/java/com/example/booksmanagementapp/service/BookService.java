@@ -10,8 +10,6 @@ import java.util.List;
 @Service
 public class BookService {
 
-    private int idCounter = 1;
-
     @Autowired
     private BookRepository bookRepository;
 
@@ -31,10 +29,8 @@ public class BookService {
     }
 
     public Book addBook(Book book) {
-        book.setId(idCounter++);
         return bookRepository.save(book);
     }
-
 
     public Book deleteBook(int id) {
         Book book = bookRepository.findById(id).orElseThrow();
