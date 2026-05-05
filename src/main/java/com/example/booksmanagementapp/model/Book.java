@@ -1,8 +1,13 @@
 package com.example.booksmanagementapp.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Book {
 
-        private Integer id;
+    @Id
+    private Integer id;
     private String name;
 
     public Book() {}

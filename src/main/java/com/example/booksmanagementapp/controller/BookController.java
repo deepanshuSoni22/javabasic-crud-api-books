@@ -52,7 +52,4 @@ public class BookController {
         return bookService.updateBookName(id, updatedBookName);
     }
 
-
-
-
 }
