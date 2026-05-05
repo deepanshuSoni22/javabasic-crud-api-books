@@ -4,7 +4,6 @@ import com.example.booksmanagementapp.model.Book;
 import com.example.booksmanagementapp.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,6 +43,7 @@ public class BookService {
         Book book = bookRepository.findById(id).orElseThrow();
         book.setName(updatedBookName.getName());
         bookRepository.save(book);
+        return book;
     }
 
 }
