@@ -2,6 +2,7 @@ package com.example.booksmanagementapp.service;
 
 import com.example.booksmanagementapp.model.Book;
 import com.example.booksmanagementapp.repository.BookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,7 @@ public class BookService {
 
     private int idCounter = 1;
 
+    @Autowired
     private BookRepository bookRepository;
 
     public BookService(BookRepository bookRepository) {
@@ -24,7 +26,8 @@ public class BookService {
     }
 
     public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+        List<Book> books = bookRepository.findAll();
+        return books.isEmpty() ? null : books;
     }
 
     public Book addBook(Book book) {
