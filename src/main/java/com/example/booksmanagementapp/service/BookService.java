@@ -1,6 +1,8 @@
 package com.example.booksmanagementapp.service;
 
-import com.example.booksmanagementapp.model.Book;
+import com.example.booksmanagementapp.dto.BookRequestDTO;
+import com.example.booksmanagementapp.dto.BookResponseDTO;
+import com.example.booksmanagementapp.entity.Book;
 import com.example.booksmanagementapp.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,17 +21,60 @@ public class BookService {
 
     public BookService() {}
 
-    public Book getBook(int id) {
-        return bookRepository.findById(id).orElse(null);
+    public BookResponseDTO getBook(int id) {
+
+        // Get the Entity (Book)
+        Book book = bookRepository.findById(id).orElse(null);
+
+        if (book == null) {
+            return null;
+        }
+
+        // Create Response DTO
+        BookResponseDTO dto = new BookResponseDTO();
+
+        // Copy the Entity to DTO
+        dto.setName(book.getName());
+
+        // return DTO
+        return dto;
+
     }
 
-    public List<Book> getAllBooks() {
+    public List<BookResponseDTO> getAllBooks() {
         List<Book> books = bookRepository.findAll();
-        return books.isEmpty() ? null : books;
+
+        return books.stream()
+                .map(book -> {
+                    BookResponseDTO dto = new BookResponseDTO();
+
+                    dto.setName(book.getName());
+
+                    return dto;
+                })
+                .toList();
     }
 
-    public Book addBook(Book book) {
-        return bookRepository.save(book);
+    public BookResponseDTO addBook(BookRequestDTO bookRequestDTO) {
+
+        // Create Entity
+        Book book = new Book();
+
+        // Copy DTO to Entity
+        book.setName(bookRequestDTO.getName());
+
+        // Save Entity into DB
+        bookRepository.save(book);
+
+        // Create Response DTO
+        BookResponseDTO bookResponseDTO = new BookResponseDTO();
+
+        // Copy Entity Data into Response DTO
+        bookResponseDTO.setName(book.getName());
+
+        // Return DTO
+        return bookResponseDTO;
+
     }
 
     public Book deleteBook(int id) {
