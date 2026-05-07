@@ -34,6 +34,7 @@ public class BookService {
         BookResponseDTO dto = new BookResponseDTO();
 
         // Copy the Entity to DTO
+        dto.setId(book.getId());
         dto.setName(book.getName());
 
         // return DTO
@@ -48,6 +49,7 @@ public class BookService {
                 .map(book -> {
                     BookResponseDTO dto = new BookResponseDTO();
 
+                    dto.setId(book.getId());
                     dto.setName(book.getName());
 
                     return dto;
@@ -67,27 +69,44 @@ public class BookService {
         bookRepository.save(book);
 
         // Create Response DTO
-        BookResponseDTO bookResponseDTO = new BookResponseDTO();
+        BookResponseDTO dto = new BookResponseDTO();
 
         // Copy Entity Data into Response DTO
-        bookResponseDTO.setName(book.getName());
+        dto.setId(book.getId());
+        dto.setName(book.getName());
 
         // Return DTO
-        return bookResponseDTO;
+        return dto;
 
     }
 
-    public Book deleteBook(int id) {
+    public BookResponseDTO deleteBook(int id) {
         Book book = bookRepository.findById(id).orElseThrow();
         bookRepository.deleteById(book.getId());
-        return book;
+
+        // create response dto
+        BookResponseDTO dto = new BookResponseDTO();
+
+        // copy deleted entity to dto
+        dto.setId(book.getId());
+        dto.setName(book.getName());
+
+        return dto;
     }
 
-    public Book updateBookName(int id, Book updatedBookName) {
+    public BookResponseDTO updateBookName(int id, BookRequestDTO updatedBookName) {
         Book book = bookRepository.findById(id).orElseThrow();
         book.setName(updatedBookName.getName());
         bookRepository.save(book);
-        return book;
+
+        // create response dto
+        BookResponseDTO dto = new BookResponseDTO();
+
+        // copy updated entity
+        dto.setId(book.getId());
+        dto.setName(book.getName());
+
+        return dto;
     }
 
 }

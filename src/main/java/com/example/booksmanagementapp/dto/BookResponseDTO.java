@@ -1,7 +1,18 @@
 package com.example.booksmanagementapp.dto;
 
 public class BookResponseDTO {
+
+    private int id;
     private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public String getName() {
         return name;
@@ -10,4 +21,5 @@ public class BookResponseDTO {
     public void setName(String name) {
         this.name = name;
     }
+
 }
