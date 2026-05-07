@@ -1,59 +1,112 @@
 package com.example.booksmanagementapp.service;
 
-import com.example.booksmanagementapp.model.Book;
+import com.example.booksmanagementapp.dto.BookRequestDTO;
+import com.example.booksmanagementapp.dto.BookResponseDTO;
+import com.example.booksmanagementapp.entity.Book;
+import com.example.booksmanagementapp.repository.BookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BookService {
 
-    private int idCounter = 1;
+    @Autowired
+    private BookRepository bookRepository;
 
-    // Storage for books
-    private List<Book> booksStorage = new ArrayList<>();
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     public BookService() {}
 
-    public Book getBook(int id) {
-        for (Book book : booksStorage) {
-            if (book.getId() == id) {
-                return book;
-            }
-        }
-        return null;
-    }
+    public BookResponseDTO getBook(int id) {
 
-    public Book addBook(Book book) {
-        book.setId(idCounter++);
-        booksStorage.add(book);
-        return book;
-    }
+        // Get the Entity (Book)
+        Book book = bookRepository.findById(id).orElse(null);
 
-    public List<Book> getAllBooks() {
-        return booksStorage;
-    }
-
-    public Book deleteBook(int id) {
-        for (int i = 0; i < booksStorage.size(); i++) {
-            Book book = booksStorage.get(i);
-            if (book.getId() == id) {
-                return booksStorage.remove(i);
-            }
-        }
-        return null;
-    }
-
-    public Book updateBookName(int id, Book updatedBookName) {
-        for (Book book : booksStorage) {
-            if (book.getId() == id) {
-                book.setName(updatedBookName.getName());
-                return book;
-            }
+        if (book == null) {
+            return null;
         }
 
-        return null;
+        // Create Response DTO
+        BookResponseDTO dto = new BookResponseDTO();
+
+        // Copy the Entity to DTO
+        dto.setId(book.getId());
+        dto.setName(book.getName());
+
+        // return DTO
+        return dto;
+
+    }
+
+    public List<BookResponseDTO> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+
+        return books.stream()
+                .map(book -> {
+                    BookResponseDTO dto = new BookResponseDTO();
+
+                    dto.setId(book.getId());
+                    dto.setName(book.getName());
+
+                    return dto;
+                })
+                .toList();
+    }
+
+    public BookResponseDTO addBook(BookRequestDTO bookRequestDTO) {
+
+        // Create Entity
+        Book book = new Book();
+
+        // Copy DTO to Entity
+        book.setName(bookRequestDTO.getName());
+
+        // Save Entity into DB
+        bookRepository.save(book);
+
+        // Create Response DTO
+        BookResponseDTO dto = new BookResponseDTO();
+
+        // Copy Entity Data into Response DTO
+        dto.setId(book.getId());
+        dto.setName(book.getName());
+
+        // Return DTO
+        return dto;
+
+    }
+
+    public BookResponseDTO deleteBook(int id) {
+        Book book = bookRepository.findById(id).orElseThrow();
+        bookRepository.deleteById(book.getId());
+
+        // create response dto
+        BookResponseDTO dto = new BookResponseDTO();
+
+        // copy deleted entity to dto
+        dto.setId(book.getId());
+        dto.setName(book.getName());
+
+        return dto;
+    }
+
+    public BookResponseDTO updateBookName(int id, BookRequestDTO updatedBookName) {
+        Book book = bookRepository.findById(id).orElseThrow();
+        book.setName(updatedBookName.getName());
+        bookRepository.save(book);
+
+        // create response dto
+        BookResponseDTO dto = new BookResponseDTO();
+
+        // copy updated entity
+        dto.setId(book.getId());
+        dto.setName(book.getName());
+
+        return dto;
     }
 
 }
