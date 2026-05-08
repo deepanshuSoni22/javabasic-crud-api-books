@@ -15,7 +15,7 @@ A very simple Spring Boot practice project made for learning purposes.
 - Spring Boot
 - Spring Web
 - Spring Data JPA
-- H2 Database
+- MySQL Database
 
 ## Note
 This is a first practice project and uses simple in-memory (List) storage.
